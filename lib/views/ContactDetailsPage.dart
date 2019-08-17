@@ -68,8 +68,8 @@ class ContactDetailsPage extends StatelessWidget {
               trailing: Text(_contact.note ?? ""),
             ),
             AddressesTile(_contact.postalAddresses),
-            ItemsTile("Phones", _contact.phones),
-            ItemsTile("Emails", _contact.emails)
+            ItemsTile("电话", _contact.phones),
+            ItemsTile("邮箱", _contact.emails)
           ],
         ),
       ),
