@@ -76,10 +76,9 @@ class _ContactListPageState extends State<ContactListPage> {
 
   // 发送短信-单发
   void _sendOneSms(Contact contact) {
-    // 目前只取第一个
-    String phoneStr = contact.phones.first.value;
-    print(phoneStr);
     var phones = contact.phones;
+    // 手机号
+    String phoneStr;
     if (phones.length == 0) {
       // 提示没有电话
       showDialog<void>(
@@ -87,7 +86,7 @@ class _ContactListPageState extends State<ContactListPage> {
           barrierDismissible: false,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("您还没有存他的联系方式"),
+              title: Text("无法发送"),
               content: Text("您还没有存他的联系方式"),
               actions: <Widget>[
                 FlatButton(
@@ -103,12 +102,35 @@ class _ContactListPageState extends State<ContactListPage> {
     }
     // TODO 对电话进行判断
     if (phones.length > 1) {
-      // TODO 多个电话
+      // TODO 多个电话，让用户选择哪个电话
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext context){
+          return SimpleDialog(
+            title: Text("请选择联系方式"),
+            children: phones.map((item)=> SimpleDialogOption(
+                  child: Text(item.value),
+                  onPressed: (){
+                    phoneStr = item.value;
+                    // 这里的短信内容应该去服务器获取
+                    String message = "祝你生日快乐!";
+                    List<String> recipents = [phoneStr];
+                    _sendSMS(message, recipents);
+                  },
+                )
+            ).toList(),
+          );
+        }
+      );
+    }else{
+      // 目前只取第一个
+      phoneStr = contact.phones.first.value;
+      print(phoneStr);
+      // 这里的短信内容应该去服务器获取
+      String message = "祝你生日快!";
+      List<String> recipents = [phoneStr];
+      _sendSMS(message, recipents);
     }
-    // 这里的短信内容应该去服务器获取
-    String message = "祝你生日快!";
-    List<String> recipents = [phoneStr];
-    _sendSMS(message, recipents);
   }
 
   // 发送短信
